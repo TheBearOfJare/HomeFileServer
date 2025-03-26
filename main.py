@@ -1,5 +1,6 @@
 from flask import Flask, render_template, send_from_directory
 import os
+from flask import *
 
 app = Flask(__name__)
 
@@ -39,6 +40,17 @@ def download_file(filename, category):
         return send_from_directory(os.path.join(app.config['DOWNLOAD_FOLDER'], category), filename, as_attachment=True)
     except FileNotFoundError:
         return "File not found", 404
+
+# uploads
+@app.route('/upload', methods=['POST', 'GET'])
+def upload_file():
+    if request.method == 'GET':
+        return render_template('upload.html')
+    if request.method == 'POST':
+        file = request.files['file']
+        filename = file.filename
+        file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+        return "File uploaded successfully"
 
 if __name__ == '__main__':
     app.run(debug=True, host='0.0.0.0') # Run on all interfaces, for local network access
