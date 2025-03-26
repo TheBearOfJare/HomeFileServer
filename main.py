@@ -6,6 +6,7 @@ app = Flask(__name__)
 # Configuration
 UPLOAD_FOLDER = 'uploads'
 DOWNLOAD_FOLDER = 'downloadables'
+app.config['DOWNLOAD_FOLDER'] = DOWNLOAD_FOLDER
 app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
 
 # Ensure the upload folder exists
@@ -15,14 +16,27 @@ os.makedirs(DOWNLOAD_FOLDER, exist_ok=True)
 # homepage
 @app.route('/')
 def index():
-    # Get a list of files in the upload folder
-    files = os.listdir(app.config['DOWNLOAD_FOLDER'])
-    return render_template('/static/index.html', files=files)
+    return render_template('index.html')
 
-@app.route('/download/<filename>')
-def download_file(filename):
+@app.route('/movies')
+def movies():
+    files = os.listdir(app.config['DOWNLOAD_FOLDER']+'/movies/')
+    return render_template('movies.html', files=files)
+
+@app.route('/shows')
+def shows():
+    files = os.listdir(app.config['DOWNLOAD_FOLDER']+'/shows/')
+    return render_template('shows.html', files=files)
+
+@app.route('/misc')
+def misc():
+    files = os.listdir(app.config['DOWNLOAD_FOLDER']+'/misc/')
+    return render_template('misc.html', files=files)
+
+@app.route('/download/<category>/<filename>')
+def download_file(filename, category):
     try:
-        return send_from_directory(app.config['DOWNLOAD_FOLDER'], filename, as_attachment=True)
+        return send_from_directory(os.path.join(app.config['DOWNLOAD_FOLDER'], category), filename, as_attachment=True)
     except FileNotFoundError:
         return "File not found", 404
 

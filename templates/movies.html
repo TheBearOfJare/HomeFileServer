@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Shows</title>
+    <title>Movies</title>
 </head>
 <body>
     <h1>Available Files</h1>
     <ul>
         {% for file in files %}
-        <li><a href="{{ url_for('download_file', filename='shows/'+file) }}">{{ file }}</a></li>
+        <li><a href="{{ url_for('download_file', filename=file, category='movies') }}">{{ file }}</a></li>
         {% endfor %}
     </ul>
 </body>
